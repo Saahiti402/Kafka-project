@@ -1,46 +1,96 @@
-# Getting Started with Create React App
+# Frontend - Pub/Sub Model with NestJS, Kafka, TypeORM & PostgreSQL
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository contains the **Frontend** for the **Pub/Sub** application that interacts with a NestJS backend using Kafka, TypeORM, and PostgreSQL.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Publisher Interface**: Allows the user to send messages to Kafka, which will be picked up by subscribers.
+- **Real-time Subscriber Notifications**: Displays real-time updates using WebSockets whenever a new message is received.
+- **Modern UI**: The application uses Material UI for an aesthetically pleasing and responsive design.
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Frontend Framework**: React.js (or Vue.js, depending on your choice).
+- **Real-time Communication**: WebSockets for receiving real-time updates from Kafka.
+- **UI Library**: Material UI for modern components.
+- **HTTP Requests**: Axios for making requests to the backend.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Node.js**: >= 14.x
+- **Kafka**: A running Kafka instance to publish/consume messages.
+- **Backend**: NestJS backend running on [http://localhost:3000](http://localhost:3000).
+  
+### Installation
 
-### `npm run build`
+1. Clone the repository:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```bash
+   git clone https://github.com/your-repo/frontend.git
+   cd frontend
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Install dependencies:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   ```bash
+   npm install
+   ```
 
-### `npm run eject`
+3. Set up the environment variables by creating a `.env` file in the root of your project:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+   ```bash
+   REACT_APP_BACKEND_URL=http://localhost:3000
+   REACT_APP_KAFKA_SERVER=localhost:9092
+   ```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. Start the development server:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+   ```bash
+   npm start
+   ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+5. Open your browser and visit [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+## Usage
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. **Publish a Message**: On the homepage, you can send a message by entering text in the input field and clicking the "Publish" button. This will send a message to the Kafka publisher via the backend.
+   
+2. **Subscribe and Receive Real-time Updates**: As a subscriber, the frontend listens for updates using WebSockets and displays the message content as soon as it's received.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+3. **View Logs**: After publishing a message, you should see logs in the browser console indicating that the subscriber has received the message.
+
+## Code Structure
+
+```
+frontend/
+│
+├── public/                   # Static assets
+├── src/                      # Application source code
+│   ├── components/           # UI components (Button, Form, etc.)
+│   ├── hooks/                # Custom React hooks (for WebSocket and Axios)
+│   ├── App.js                # Main React app component
+│   ├── index.js              # Entry point
+│   ├── WebSocketClient.js    # WebSocket connection for receiving messages
+│
+├── .env                      # Environment variables for Kafka and backend URL
+├── package.json              # Project dependencies and scripts
+└── README.md                 # This file
+```
+
+## Example Usage
+
+1. **Frontend sends a message to Kafka**:
+
+   - When a user clicks "Publish", the frontend sends a POST request to the `/publisher` endpoint on the backend. This message is sent to Kafka for further processing.
+
+2. **Backend notifies frontend of updates**:
+
+   - The frontend listens for updates via WebSockets. When Kafka processes the message, it triggers a real-time notification on the frontend.
+
+
+
+---
+
+Let me know if you need any other sections or have additional information you'd like to include!
