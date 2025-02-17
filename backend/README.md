@@ -1,99 +1,142 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend - Pub/Sub Model with NestJS, Kafka, TypeORM & PostgreSQL
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This repository contains the **Backend** for the **Pub/Sub** application built using **NestJS**, **Kafka**, **TypeORM**, and **PostgreSQL**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- **Kafka Publisher**: Publishes messages to Kafka when the `POST /publisher` endpoint is hit.
+- **Kafka Subscriber**: Subscribes to Kafka topics and listens for updates, triggering real-time notifications to connected clients.
+- **PostgreSQL Integration**: Uses TypeORM for interacting with the PostgreSQL database to manage messages.
+- **WebSocket Support**: Sends real-time updates to frontend clients when new messages are processed.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Tech Stack
 
-## Project setup
+- **NestJS**: Backend framework for building scalable and maintainable applications.
+- **Kafka**: Messaging system used for the Pub/Sub model.
+- **TypeORM**: ORM to interact with PostgreSQL for storing message data.
+- **PostgreSQL**: Relational database for persisting data.
+- **WebSockets**: Real-time communication for sending notifications to the frontend.
 
-```bash
-$ npm install
+## Getting Started
+
+### Prerequisites
+
+- **Node.js**: >= 14.x
+- **Kafka**: A running Kafka instance on localhost (`localhost:9092` by default).
+- **PostgreSQL**: A running PostgreSQL instance.
+- **Kafka Topics**: Ensure the Kafka topics are created, such as `database.updated` for message updates.
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-repo/backend.git
+   cd backend
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Set up the environment variables by creating a `.env` file in the root of your project:
+
+   ```bash
+   KAFKA_BROKER=localhost:9092
+   POSTGRES_HOST=localhost
+   POSTGRES_PORT=5432
+   POSTGRES_USER=your_user
+   POSTGRES_PASSWORD=your_password
+   POSTGRES_DB=your_db
+   ```
+
+4. Start PostgreSQL and Kafka if they are not running.
+
+5. Start the NestJS application:
+
+   ```bash
+   npm run start
+   ```
+
+6. The backend will start on [http://localhost:3000](http://localhost:3000).
+
+## Usage
+
+### Publisher Endpoint
+
+- **POST `/publisher`**
+  - Publishes a message to Kafka and stores it in the PostgreSQL database.
+  - Example request:
+
+    ```json
+    {
+      "message": "Hello Kafka!"
+    }
+    ```
+
+  - Example response:
+
+    ```json
+    {
+      "status": "Message published"
+    }
+    ```
+
+### Subscriber (Real-time Updates)
+
+- The backend connects to Kafka as a subscriber and listens for messages on the `database.updated` topic. 
+- Whenever a new message is published, it triggers WebSocket notifications to the frontend clients.
+
+### WebSocket Communication
+
+- WebSocket is used for pushing real-time notifications to connected clients when messages are received via Kafka.
+
+## Code Structure
+
+```
+backend/
+│
+├── src/                      # Application source code
+│   ├── app.module.ts         # Main module, integrates everything
+│   ├── publisher/            # Publisher module (handles Kafka publishing)
+│   ├── subscriber/           # Subscriber module (handles Kafka consumption)
+│   ├── database/             # Database module (TypeORM models and configuration)
+│   ├── shared/               # Shared modules and utilities (WebSocket handling)
+│   └── main.ts               # Entry point of the application
+│
+├── .env                      # Environment variables for Kafka and PostgreSQL
+├── package.json              # Project dependencies and scripts
+├── tsconfig.json             # TypeScript configuration
+└── README.md                 # This file
 ```
 
-## Compile and run the project
+## Example Workflow
 
-```bash
-# development
-$ npm run start
+1. **Publishing a Message**: 
+   - A `POST` request is made to the `/publisher` endpoint with the message data. 
+   - The backend publishes this message to Kafka and stores the message in the PostgreSQL database.
 
-# watch mode
-$ npm run start:dev
+2. **Kafka Consumption**: 
+   - The backend listens for messages from the Kafka topic `database.updated` using the Kafka Consumer.
+   - Once a message is consumed, it is sent to connected frontend clients via WebSocket.
 
-# production mode
-$ npm run start:prod
-```
+3. **Real-Time Update**: 
+   - The subscriber module triggers a WebSocket event that notifies the frontend of the new message.
 
-## Run tests
+## Testing
 
-```bash
-# unit tests
-$ npm run test
+1. **Publisher Test**: 
+   - Use any HTTP client (e.g., Postman or cURL) to send a `POST` request to `/publisher` with the message body.
+   
+   Example with cURL:
 
-# e2e tests
-$ npm run test:e2e
+   ```bash
+   curl -X POST http://localhost:3000/publisher -H "Content-Type: application/json" -d '{"message": "Test Message"}'
+   ```
 
-# test coverage
-$ npm run test:cov
-```
+2. **Subscriber Test**:
+   - Open the frontend application, which should receive real-time updates when a message is published via Kafka.
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
