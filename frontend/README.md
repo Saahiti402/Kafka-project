@@ -92,5 +92,3 @@ frontend/
 
 
 ---
-
-Let me know if you need any other sections or have additional information you'd like to include!
